@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UNIVERSITY APPLICATION</title>
+
+<!-- PDF Library -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<style>
+:root {
+    --neon-green: #00cc6a;
+    --dark-bg: #0a0a0a;
+    --border-color: #ddd;
+    --text-main: #333;
+}
+
+*{box-sizing:border-box; transition: 0.3s;}
+
+body {
+    margin:0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: var(--text-main);
+    background-color: #f4f4f9;
+    line-height: 1.6;
+}
+
+/* NAVIGATION - Responsive */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 5%;
+    background: #000;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.logo {
+    color: var(--neon-green);
+    font-weight: 900;
+    font-size: 1.2rem;
+    letter-spacing: 1px;
+}
+
+.nav-links { display: flex; gap: 5px; }
+
+.nav-links button {
+    background: transparent;
+    color: white;
+    border: none;
+    padding: 8px 10px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+/* HERO SECTION - Responsive height and text */
+#home { background: var(--dark-bg); }
+
+.hero-container {
+    position: relative;
+    min-height: 60vh;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: url('https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=2070&auto=format&fit=crop') no-repeat center center;
+    background-size: cover;
+}
+
+.hero-overlay {
+    position: absolute;
+    top:0; left:0; width:100%; height:100%;
+    background: rgba(0, 0, 0, 0.7);
+}
+
+.hero-content {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    color: white;
+    padding: 20px;
+    width: 90%;
+}
+
+.hero-content h1 {
+    font-size: clamp(1.8rem, 8vw, 4rem);
+    margin-bottom: 10px;
+    text-transform: uppercase;
+}
+
+.hero-content span { color: var(--neon-green); }
+
+/* MOTIVATION SECTION - Responsive Grid */
+.motivation-section {
+    padding: 40px 5%;
+    background: #000;
+    text-align: center;
+}
+
+.motivation-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-top: 30px;
+}
+
+.quote-card {
+    background: rgba(255,255,255,0.05);
+    padding: 25px;
+    border-radius: 12px;
+    border-top: 3px solid var(--neon-green);
+    color: #eee;
+    font-style: italic;
+    font-size: 0.95rem;
+}
+
+/* APPLICATION PAGE - Background Responsive */
+#apply {
+    background: url('https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&q=80&w=2069') no-repeat center center fixed;
+    background-size: cover;
+    min-height: 100vh;
+    padding: 20px 0;
+}
+
+.container {
+    width: 95%;
+    max-width: 900px;
+    margin: auto;
+}
+
+/* FORM SECTIONS */
+.form-section {
+    background: rgba(255, 255, 255, 0.98);
+    padding: 25px;
+    border-radius: 15px;
+    margin-bottom: 25px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+.form-section h3 {
+    margin-top: 0;
+    color: #111;
+    border-bottom: 2px solid var(--neon-green);
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+    font-size: 1.1rem;
+}
+
+.instruction-box {
+    background: #fff4e5;
+    border-left: 5px solid #ffa000;
+    padding: 15px;
+    margin-bottom: 20px;
+    color: #856404;
+    border-radius: 8px;
+    font-size: 0.9rem;
+}
+
+/* INPUTS - Touch friendly */
+label { display: block; font-weight: 700; margin-bottom: 5px; font-size: 0.8rem; color: #444; }
+input, textarea {
+    width: 100%; padding: 12px; margin-bottom: 15px;
+    border: 1px solid var(--border-color); border-radius: 6px;
+    font-size: 16px; /* Prevents auto-zoom on iOS */
+}
+
+.grid-2 { 
+    display: grid; 
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); 
+    gap: 15px; 
+}
+
+/* BUTTONS */
+.btn-primary {
+    background: var(--neon-green); color: black; padding: 15px 30px;
+    border: none; border-radius: 50px; font-weight: bold; cursor: pointer;
+    width: auto;
+}
+
+.btn-submit {
+    width: 100%; padding: 16px; background: #111; color: white;
+    border: none; font-weight: bold; border-radius: 10px; cursor: pointer; 
+    margin-top: 10px; font-size: 1rem;
+}
+
+.btn-submit:hover { background: var(--neon-green); color: black; }
+
+/* PAGE CONTROL */
+.page { display: none; }
+.active { display: block; }
+
+#progressBar {
+    height: 4px; background: var(--neon-green); width: 0%;
+    position: fixed; top: 50px; left: 0; z-index: 1001;
+}
+
+.footer { text-align: center; padding: 30px; background: #000; color: #888; font-size: 0.8rem; }
+
+/* Mobile adjustments */
+@media (max-width: 480px) {
+    .navbar { padding: 10px 3%; }
+    .logo { font-size: 1rem; }
+    .form-section { padding: 15px; }
+    .hero-container { min-height: 50vh; }
+}
+</style>
+</head>
+<body>
+
+<div id="progressBar"></div>
+
+<nav class="navbar">
+    <div class="logo">UNIVERSITY APPLICATION</div>
+    <div class="nav-links">
+        <button onclick="showPage('home')">Home</button>
+        <button onclick="showPage('apply')">Apply</button>
+    </div>
+</nav>
+
+<!-- HOME PAGE -->
+<div id="home" class="page active">
+    <div class="hero-container">
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <p style="letter-spacing: 2px; color: var(--neon-green); font-weight: 800; font-size: 0.8rem;">CLASS OF 2026</p>
+            <h1>UNIVERSITY <span>APPLICATION</span></h1>
+            <p>Your portal to a successful 2027 academic year starts here.</p>
+            <br>
+            <button class="btn-primary" onclick="showPage('apply')">START APPLICATION</button>
+        </div>
+    </div>
+    
+    <div class="motivation-section">
+        <h2 style="color: white; font-size: 1.5rem;">Inspiration Hub</h2>
+        <div class="motivation-grid">
+            <div class="quote-card">"Success in Grade 12 is built on the discipline you show today. Aim for the stars."</div>
+            <div class="quote-card">"The Class of 2026 is a generation of innovators. Apply now and claim your future."</div>
+            <div class="quote-card">"The best way to predict your future is to create it. Start your journey today."</div>
+        </div>
+    </div>
+
+    <div class="container" style="padding: 20px 0;">
+        <div class="grid-2">
+            <div class="form-section" style="background: rgba(255,255,255,0.05); color: white; border-color: #333;">
+                <h3>Deadline</h3>
+                <p>2027 Admissions close: <b>30 Sept 2026</b>.</p>
+            </div>
+            <div class="form-section" style="background: rgba(255,255,255,0.05); color: white; border-color: #333;">
+                <h3>Branding</h3>
+                <p>Powered by <b>tivalsdeveloper</b></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- APPLICATION PAGE -->
+<div id="apply" class="page">
+    <div class="container">
+        <h2 style="color: white; text-align: center; text-shadow: 2px 2px 5px rgba(0,0,0,0.5);">UNIVERSITY APPLICATION</h2>
+
+        <div class="instruction-box">
+            <h4>⚠️ MANDATORY DOCUMENTS</h4>
+            <p>When you submit via WhatsApp, you <b>must</b> send:</p>
+            <ul>
+                <li>Certified Copy of your ID</li>
+                <li>Final Grade 11 Results</li>
+            </ul>
+        </div>
+
+        <!-- 1. STUDENT -->
+        <div class="form-section">
+            <h3>1. Student Information</h3>
+            <label>Full Names & Surname</label>
+            <input type="text" id="name">
+            <div class="grid-2">
+                <div><label>ID Number</label><input type="text" id="idNum"></div>
+                <div><label>Mobile Number</label><input type="tel" id="phone"></div>
+            </div>
+            <label>Email Address</label>
+            <input type="email" id="email">
+            <label>Physical Home Address</label>
+            <textarea id="address" rows="2"></textarea>
+        </div>
+
+        <!-- 2. PARENT -->
+        <div class="form-section">
+            <h3>2. Parent / Guardian</h3>
+            <label>Full Name</label>
+            <input type="text" id="pName">
+            <div class="grid-2">
+                <div><label>Cell Number</label><input type="tel" id="pPhone"></div>
+                <div><label>Email Address</label><input type="email" id="pEmail"></div>
+            </div>
+            <label>Guardian Home Address</label>
+            <textarea id="pAddress" rows="2"></textarea>
+        </div>
+
+        <!-- 3. KIN -->
+        <div class="form-section">
+            <h3>3. Next of Kin (Emergency)</h3>
+            <label>Full Name</label>
+            <input type="text" id="kName">
+            <div class="grid-2">
+                <div><label>Relationship</label><input type="text" id="kRel"></div>
+                <div><label>Contact Number</label><input type="tel" id="kPhone"></div>
+            </div>
+            <label>Next of Kin Home Address</label>
+            <textarea id="kAddress" rows="2"></textarea>
+        </div>
+
+        <!-- 4. ACADEMIC -->
+        <div class="form-section">
+            <h3>4. Academic Performance</h3>
+            <label>High School Name</label>
+            <input type="text" id="school">
+            <div id="subjectList">
+                <div class="grid-2">
+                    <input type="text" class="sub-name" placeholder="Subject">
+                    <input type="number" class="sub-mark" placeholder="%" oninput="calculateAPS()">
+                </div>
+            </div>
+            <button onclick="addSubject()" style="margin-top:10px; cursor:pointer; padding: 5px 15px;">+ Add Subject</button>
+            <div style="background: #f0f0f0; padding: 15px; border-radius: 10px; margin-top: 15px; text-align: center; border: 2px dashed var(--neon-green);">
+                <small>Estimated APS:</small><br>
+                <span id="apsScore" style="color:var(--neon-green); font-size: 2rem; font-weight: 900;">0</span>
+            </div>
+        </div>
+
+        <!-- 5. CAREERS -->
+        <div class="form-section">
+            <h3>5. Career Choices</h3>
+            <input type="text" id="c1" placeholder="Choice 1">
+            <input type="text" id="c2" placeholder="Choice 2">
+            <input type="text" id="c3" placeholder="Choice 3">
+            <input type="text" id="c4" placeholder="Choice 4">
+            <input type="text" id="c5" placeholder="Choice 5">
+        </div>
+
+        <div style="margin-bottom: 80px;">
+            <button class="btn-submit" onclick="generatePDF()">DOWNLOAD PDF DOCUMENT</button>
+            <button class="btn-submit" style="background: #25D366; color: white;" onclick="submitWA()">WHATSAPP SUBMIT</button>
+        </div>
+    </div>
+</div>
+
+<div class="footer">Powered by tivalsdeveloper</div>
+
+<script>
+function showPage(id) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    window.scrollTo(0,0);
+}
+
+function addSubject() {
+    const div = document.createElement('div');
+    div.className = 'grid-2';
+    div.style.marginTop = "10px";
+    div.innerHTML = `<input type="text" class="sub-name" placeholder="Subject"><input type="number" class="sub-mark" placeholder="%" oninput="calculateAPS()">`;
+    document.getElementById('subjectList').appendChild(div);
+}
+
+function calculateAPS() {
+    const marks = Array.from(document.querySelectorAll('.sub-mark')).map(input => parseInt(input.value) || 0);
+    let levels = marks.map(m => {
+        if(m >= 80) return 7; if(m >= 70) return 6; if(m >= 60) return 5;
+        if(m >= 50) return 4; if(m >= 40) return 3; if(m >= 30) return 2; return 1;
+    });
+    levels.sort((a,b) => b - a);
+    const total = levels.slice(0, 6).reduce((a, b) => a + b, 0);
+    document.getElementById('apsScore').innerText = total;
+
+    // ProgressBar logic
+    const inputs = document.querySelectorAll('#apply input[type="text"]');
+    let filled = 0;
+    inputs.forEach(i => { if(i.value.trim().length > 0) filled++; });
+    document.getElementById('progressBar').style.width = (filled / inputs.length * 100) + "%";
+}
+
+async function generatePDF() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    let y = 20;
+
+    const print = (txt, sz=10, st='normal') => {
+        doc.setFontSize(sz); doc.setFont("helvetica", st);
+        let lines = doc.splitTextToSize(txt, 180);
+        doc.text(lines, 15, y);
+        y += (lines.length * (sz/2)) + 2;
+        if(y > 280) { doc.addPage(); y = 20; }
+    };
+
+    print("UNIVERSITY APPLICATION - 2026 CYCLE", 16, 'bold');
+    y += 5;
+
+    print("STUDENT: " + document.getElementById('name').value, 11, 'bold');
+    print("ID: " + document.getElementById('idNum').value);
+    print("Email: " + document.getElementById('email').value);
+    print("Address: " + document.getElementById('address').value);
+    
+    y += 5;
+    print("PARENT: " + document.getElementById('pName').value, 11, 'bold');
+    print("Guardian Address: " + document.getElementById('pAddress').value);
+    
+    y += 5;
+    print("NEXT OF KIN: " + document.getElementById('kName').value, 11, 'bold');
+    print("Kin Address: " + document.getElementById('kAddress').value);
+
+    y += 5;
+    print("ACADEMIC - APS Score: " + document.getElementById('apsScore').innerText, 11, 'bold');
+    print("School: " + document.getElementById('school').value);
+    
+    const subN = document.querySelectorAll('.sub-name');
+    const subM = document.querySelectorAll('.sub-mark');
+    subN.forEach((s, i) => { if(s.value) print("- " + s.value + ": " + subM[i].value + "%"); });
+
+    y += 5;
+    print("CAREER CHOICES:", 11, 'bold');
+    for(let i=1; i<=5; i++) {
+        let v = document.getElementById('c'+i).value;
+        if(v) print(i + ". " + v);
+    }
+
+    y += 10;
+    print("Powered by tivalsdeveloper", 8, 'italic');
+    doc.save("Application_2026.pdf");
+}
+
+function submitWA() {
+    const name = document.getElementById('name').value;
+    const aps = document.getElementById('apsScore').innerText;
+    const msg = `*NEW UNIVERSITY APPLICATION (2026)*%0A*Name:* ${name}%0A*APS:* ${aps}%0A%0A*DOCUMENTS:* I will now send my Certified ID and Grade 11 results.`;
+    window.open(`https://wa.me/27792708403?text=${msg}`);
+}
+</script>
+
+</body>
+</html>
